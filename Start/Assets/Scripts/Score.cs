@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class Score : MonoBehaviour
 {
   [SerializeField] TextMeshProUGUI m_scoreText;
+  GameManager m_gameManager;
+  
   public int ScoreValue { get; private set; }
 
   public void ResetScore()

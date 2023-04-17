@@ -1,53 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
   [SerializeField] TextMeshProUGUI m_gameOverText;
-  [FormerlySerializedAs("m_TimerText")] [SerializeField] TextMeshProUGUI m_timerText;
+  [SerializeField] TextMeshProUGUI m_timerText;
+  [SerializeField] Button m_startGameButton;
   [SerializeField] Score m_playerScore;
   [SerializeField] Score m_opponentScore;
   [SerializeField] float m_gameTimeInSeconds = 60f;
   float m_timer;
-  bool m_isGamePlaying = false;
-  public static float RespawnHeight = 0.25f;
-
-  // Start is called before the first frame update
+  [HideInInspector] public bool m_isGamePlaying;
+  public const float RespawnHeight = 0.25f;
+  RollingMovement[] m_ballsRollingMovement;
+  Collectable m_collectable;
+  
   void Start()
   {
     // set the time scale to 0 to pause the game at the start
     Time.timeScale = 0f;
+    m_isGamePlaying = false;
 
     // set the timer to default count down time 
     m_timer = m_gameTimeInSeconds;
 
     // update timer's text
     UpdateTimerText();
+    
+    // m_rollingMovements = GameObject.FindObjectsOfType<RollingMovement>();
+    m_ballsRollingMovement = gameObject.GetComponentsInChildren<RollingMovement>();
+    m_collectable = gameObject.GetComponentInChildren<Collectable>();
   }
 
   void UpdateTimerText()
   {
-    m_timerText.text = string.Format("{0:0}:{1:00}",
-                                     Mathf.Floor(m_timer / 60),
-                                     Mathf.Floor(m_timer % 60));
+    m_timerText.text = $"{Mathf.Floor(m_timer / 60):0}:{Mathf.Floor(m_timer % 60):00}";
   }
 
-  // Update is called once per frame
   void FixedUpdate()
   {
-    UpdateTimerText();
+    if (m_isGamePlaying) {
+      UpdateTimerText();
 
-    if (!m_isGamePlaying) return;
+      m_timer -= Time.fixedDeltaTime;
 
-    m_timer -= Time.fixedDeltaTime;
-
-    if (m_timer <= 0)
-    {
-      GameOver();
-      m_timer = 0;
+      if (m_timer <= 0)
+      {
+        GameOver();
+        m_timer = 0;
+      }
     }
   }
 
@@ -56,30 +58,35 @@ public class GameManager : MonoBehaviour
     m_isGamePlaying = false;
     Time.timeScale = 0;
 
-    string gameOverText;
-
     if (m_playerScore.ScoreValue > m_opponentScore.ScoreValue)
-      gameOverText = "You Win!";
+      m_gameOverText.text = "You Win!";
     else if (m_playerScore.ScoreValue < m_opponentScore.ScoreValue)
-      gameOverText = "You Loose.";
+      m_gameOverText.text = "You Loose.";
     else
-      gameOverText = "It's a tie.";
+      m_gameOverText.text = "Tie!";
 
-    m_gameOverText.text = gameOverText + "\n\nPress SPACE to Restart.";
+    m_startGameButton.GetComponentInChildren<TextMeshProUGUI>().text = "Restart";
 
     m_gameOverText.gameObject.SetActive(true);
+    m_startGameButton.gameObject.SetActive(true);
   }
 
-  public void RestartGame()
+  public void StartGame()
   {
-    if (!m_isGamePlaying)
+    foreach (RollingMovement ball in m_ballsRollingMovement)
     {
-      Time.timeScale = 1f;
-
-      m_gameOverText.gameObject.SetActive(false);
-
-      m_timer = m_gameTimeInSeconds;
-      m_isGamePlaying = true;
+      ball.ResetPosition();
     }
+    m_collectable.ResetPosition();
+    
+    m_playerScore.ResetScore();
+    m_opponentScore.ResetScore();
+
+    m_gameOverText.gameObject.SetActive(false);
+    m_startGameButton.gameObject.SetActive(false);
+
+    m_timer = m_gameTimeInSeconds;
+    Time.timeScale = 1f;
+    m_isGamePlaying = true;
   }
 }

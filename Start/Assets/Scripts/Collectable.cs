@@ -4,10 +4,12 @@ public class Collectable : MonoBehaviour
 {
   [SerializeField] float m_spawnRange = 0.4f;
   Vector3 m_startPosition;
+  GameManager m_gameManager;
 
   void Start()
   {
     m_startPosition = transform.position;
+    m_gameManager = GetComponent<GameManager>();
   }
 
   void OnTriggerStay(Collider other)
@@ -22,6 +24,7 @@ public class Collectable : MonoBehaviour
 
   public void ResetPosition()
   {
+    // if (m_gameManager.m_isGamePlaying) return;
     transform.position = m_startPosition;
   }
 }

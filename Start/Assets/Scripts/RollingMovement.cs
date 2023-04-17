@@ -1,12 +1,12 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class RollingMovement : MonoBehaviour
 {
-  [FormerlySerializedAs("speed")] [SerializeField] float m_speed = 1f;
+  [SerializeField] float m_speed = 1f;
   Rigidbody m_rigidbody;
   [HideInInspector] public Vector3 m_movementDirection;
   Vector3 m_startPosition;
+  GameManager m_gameManager;
 
   // Start is called before the first frame update
   void Start()
@@ -30,9 +30,9 @@ public class RollingMovement : MonoBehaviour
 
   public void ResetPosition()
   {
-    // reset position to start position
-    m_rigidbody.velocity = Vector3.zero;
-    m_rigidbody.angularVelocity = Vector3.zero;
-    transform.position = m_startPosition;
+      // reset position to start position
+      m_rigidbody.velocity = Vector3.zero;
+      m_rigidbody.angularVelocity = Vector3.zero;
+      transform.position = m_startPosition;
   }
 }
