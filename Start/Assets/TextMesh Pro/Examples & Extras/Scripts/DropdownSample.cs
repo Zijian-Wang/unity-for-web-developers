@@ -1,19 +1,20 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DropdownSample: MonoBehaviour
 {
-	[SerializeField]
-	private TextMeshProUGUI text = null;
+	[FormerlySerializedAs("text")] [SerializeField]
+	private TextMeshProUGUI m_text = null;
 
-	[SerializeField]
-	private TMP_Dropdown dropdownWithoutPlaceholder = null;
+	[FormerlySerializedAs("dropdownWithoutPlaceholder")] [SerializeField]
+	private TMP_Dropdown m_dropdownWithoutPlaceholder = null;
 
-	[SerializeField]
-	private TMP_Dropdown dropdownWithPlaceholder = null;
+	[FormerlySerializedAs("dropdownWithPlaceholder")] [SerializeField]
+	private TMP_Dropdown m_dropdownWithPlaceholder = null;
 
 	public void OnButtonClick()
 	{
-		text.text = dropdownWithPlaceholder.value > -1 ? "Selected values:\n" + dropdownWithoutPlaceholder.value + " - " + dropdownWithPlaceholder.value : "Error: Please make a selection";
+		m_text.text = m_dropdownWithPlaceholder.value > -1 ? "Selected values:\n" + m_dropdownWithoutPlaceholder.value + " - " + m_dropdownWithPlaceholder.value : "Error: Please make a selection";
 	}
 }

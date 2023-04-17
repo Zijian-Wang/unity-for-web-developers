@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 
 namespace TMPro.Examples
@@ -8,17 +9,17 @@ namespace TMPro.Examples
     public class VertexShakeB : MonoBehaviour
     {
 
-        public float AngleMultiplier = 1.0f;
-        public float SpeedMultiplier = 1.0f;
-        public float CurveScale = 1.0f;
+        [FormerlySerializedAs("AngleMultiplier")] public float m_angleMultiplier = 1.0f;
+        [FormerlySerializedAs("SpeedMultiplier")] public float m_speedMultiplier = 1.0f;
+        [FormerlySerializedAs("CurveScale")] public float m_curveScale = 1.0f;
 
-        private TMP_Text m_TextComponent;
-        private bool hasTextChanged;
+        private TMP_Text m_textComponent;
+        private bool m_hasTextChanged;
 
 
         void Awake()
         {
-            m_TextComponent = GetComponent<TMP_Text>();
+            m_textComponent = GetComponent<TMP_Text>();
         }
 
         void OnEnable()
@@ -41,8 +42,8 @@ namespace TMPro.Examples
 
         void ON_TEXT_CHANGED(Object obj)
         {
-            if (obj = m_TextComponent)
-                hasTextChanged = true;
+            if (obj = m_textComponent)
+                m_hasTextChanged = true;
         }
 
         /// <summary>
@@ -54,19 +55,19 @@ namespace TMPro.Examples
 
             // We force an update of the text object since it would only be updated at the end of the frame. Ie. before this code is executed on the first frame.
             // Alternatively, we could yield and wait until the end of the frame when the text object will be generated.
-            m_TextComponent.ForceMeshUpdate();
+            m_textComponent.ForceMeshUpdate();
 
-            TMP_TextInfo textInfo = m_TextComponent.textInfo;
+            TMP_TextInfo textInfo = m_textComponent.textInfo;
 
             Matrix4x4 matrix;
             Vector3[][] copyOfVertices = new Vector3[0][];
 
-            hasTextChanged = true;
+            m_hasTextChanged = true;
 
             while (true)
             {
                 // Allocate new vertices 
-                if (hasTextChanged)
+                if (m_hasTextChanged)
                 {
                     if (copyOfVertices.Length < textInfo.meshInfo.Length)
                         copyOfVertices = new Vector3[textInfo.meshInfo.Length][];
@@ -77,7 +78,7 @@ namespace TMPro.Examples
                         copyOfVertices[i] = new Vector3[length];
                     }
 
-                    hasTextChanged = false;
+                    m_hasTextChanged = false;
                 }
 
                 int characterCount = textInfo.characterCount;
@@ -174,7 +175,7 @@ namespace TMPro.Examples
                 for (int i = 0; i < textInfo.meshInfo.Length; i++)
                 {
                     textInfo.meshInfo[i].mesh.vertices = copyOfVertices[i];
-                    m_TextComponent.UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+                    m_textComponent.UpdateGeometry(textInfo.meshInfo[i].mesh, i);
                 }
 
                 yield return new WaitForSeconds(0.1f);

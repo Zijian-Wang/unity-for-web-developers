@@ -6,18 +6,18 @@ namespace TMPro.Examples
 {
     public class TextConsoleSimulator : MonoBehaviour
     {
-        private TMP_Text m_TextComponent;
-        private bool hasTextChanged;
+        private TMP_Text m_textComponent;
+        private bool m_hasTextChanged;
 
         void Awake()
         {
-            m_TextComponent = gameObject.GetComponent<TMP_Text>();
+            m_textComponent = gameObject.GetComponent<TMP_Text>();
         }
 
 
         void Start()
         {
-            StartCoroutine(RevealCharacters(m_TextComponent));
+            StartCoroutine(RevealCharacters(m_textComponent));
             //StartCoroutine(RevealWords(m_TextComponent));
         }
 
@@ -37,7 +37,7 @@ namespace TMPro.Examples
         // Event received when the text object has changed.
         void ON_TEXT_CHANGED(Object obj)
         {
-            hasTextChanged = true;
+            m_hasTextChanged = true;
         }
 
 
@@ -56,10 +56,10 @@ namespace TMPro.Examples
 
             while (true)
             {
-                if (hasTextChanged)
+                if (m_hasTextChanged)
                 {
                     totalVisibleCharacters = textInfo.characterCount; // Update visible character count.
-                    hasTextChanged = false; 
+                    m_hasTextChanged = false; 
                 }
 
                 if (visibleCount > totalVisibleCharacters)

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 
 namespace TMPro.Examples
@@ -8,16 +9,16 @@ namespace TMPro.Examples
     public class WarpTextExample : MonoBehaviour
     {
 
-        private TMP_Text m_TextComponent;
+        private TMP_Text m_textComponent;
 
-        public AnimationCurve VertexCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
-        public float AngleMultiplier = 1.0f;
-        public float SpeedMultiplier = 1.0f;
-        public float CurveScale = 1.0f;
+        [FormerlySerializedAs("VertexCurve")] public AnimationCurve m_vertexCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.25f, 2.0f), new Keyframe(0.5f, 0), new Keyframe(0.75f, 2.0f), new Keyframe(1, 0f));
+        [FormerlySerializedAs("AngleMultiplier")] public float m_angleMultiplier = 1.0f;
+        [FormerlySerializedAs("SpeedMultiplier")] public float m_speedMultiplier = 1.0f;
+        [FormerlySerializedAs("CurveScale")] public float m_curveScale = 1.0f;
 
         void Awake()
         {
-            m_TextComponent = gameObject.GetComponent<TMP_Text>();
+            m_textComponent = gameObject.GetComponent<TMP_Text>();
         }
 
 
@@ -44,33 +45,33 @@ namespace TMPro.Examples
         /// <returns></returns>
         IEnumerator WarpText()
         {
-            VertexCurve.preWrapMode = WrapMode.Clamp;
-            VertexCurve.postWrapMode = WrapMode.Clamp;
+            m_vertexCurve.preWrapMode = WrapMode.Clamp;
+            m_vertexCurve.postWrapMode = WrapMode.Clamp;
 
             //Mesh mesh = m_TextComponent.textInfo.meshInfo[0].mesh;
 
             Vector3[] vertices;
             Matrix4x4 matrix;
 
-            m_TextComponent.havePropertiesChanged = true; // Need to force the TextMeshPro Object to be updated.
-            CurveScale *= 10;
-            float old_CurveScale = CurveScale;
-            AnimationCurve old_curve = CopyAnimationCurve(VertexCurve);
+            m_textComponent.havePropertiesChanged = true; // Need to force the TextMeshPro Object to be updated.
+            m_curveScale *= 10;
+            float oldCurveScale = m_curveScale;
+            AnimationCurve oldCurve = CopyAnimationCurve(m_vertexCurve);
 
             while (true)
             {
-                if (!m_TextComponent.havePropertiesChanged && old_CurveScale == CurveScale && old_curve.keys[1].value == VertexCurve.keys[1].value)
+                if (!m_textComponent.havePropertiesChanged && oldCurveScale == m_curveScale && oldCurve.keys[1].value == m_vertexCurve.keys[1].value)
                 {
                     yield return null;
                     continue;
                 }
 
-                old_CurveScale = CurveScale;
-                old_curve = CopyAnimationCurve(VertexCurve);
+                oldCurveScale = m_curveScale;
+                oldCurve = CopyAnimationCurve(m_vertexCurve);
 
-                m_TextComponent.ForceMeshUpdate(); // Generate the mesh and populate the textInfo with data we can use and manipulate.
+                m_textComponent.ForceMeshUpdate(); // Generate the mesh and populate the textInfo with data we can use and manipulate.
 
-                TMP_TextInfo textInfo = m_TextComponent.textInfo;
+                TMP_TextInfo textInfo = m_textComponent.textInfo;
                 int characterCount = textInfo.characterCount;
 
 
@@ -79,8 +80,8 @@ namespace TMPro.Examples
                 //vertices = textInfo.meshInfo[0].vertices;
                 //int lastVertexIndex = textInfo.characterInfo[characterCount - 1].vertexIndex;
 
-                float boundsMinX = m_TextComponent.bounds.min.x;  //textInfo.meshInfo[0].mesh.bounds.min.x;
-                float boundsMaxX = m_TextComponent.bounds.max.x;  //textInfo.meshInfo[0].mesh.bounds.max.x;
+                float boundsMinX = m_textComponent.bounds.min.x;  //textInfo.meshInfo[0].mesh.bounds.min.x;
+                float boundsMaxX = m_textComponent.bounds.max.x;  //textInfo.meshInfo[0].mesh.bounds.max.x;
 
 
 
@@ -109,8 +110,8 @@ namespace TMPro.Examples
                     // Compute the angle of rotation for each character based on the animation curve
                     float x0 = (offsetToMidBaseline.x - boundsMinX) / (boundsMaxX - boundsMinX); // Character's position relative to the bounds of the mesh.
                     float x1 = x0 + 0.0001f;
-                    float y0 = VertexCurve.Evaluate(x0) * CurveScale;
-                    float y1 = VertexCurve.Evaluate(x1) * CurveScale;
+                    float y0 = m_vertexCurve.Evaluate(x0) * m_curveScale;
+                    float y1 = m_vertexCurve.Evaluate(x1) * m_curveScale;
 
                     Vector3 horizontal = new Vector3(1, 0, 0);
                     //Vector3 normal = new Vector3(-(y1 - y0), (x1 * (boundsMaxX - boundsMinX) + boundsMinX) - offsetToMidBaseline.x, 0);
@@ -135,7 +136,7 @@ namespace TMPro.Examples
 
 
                 // Upload the mesh with the revised information
-                m_TextComponent.UpdateVertexData();
+                m_textComponent.UpdateVertexData();
 
                 yield return new WaitForSeconds(0.025f);
             }

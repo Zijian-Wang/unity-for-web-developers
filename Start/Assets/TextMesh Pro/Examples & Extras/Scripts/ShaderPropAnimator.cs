@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 
 namespace TMPro.Examples
@@ -8,20 +9,20 @@ namespace TMPro.Examples
     public class ShaderPropAnimator : MonoBehaviour
     {
 
-        private Renderer m_Renderer;
-        private Material m_Material;
+        private Renderer m_renderer;
+        private Material m_material;
 
-        public AnimationCurve GlowCurve;
+        [FormerlySerializedAs("GlowCurve")] public AnimationCurve m_glowCurve;
 
         public float m_frame;
 
         void Awake()
         {
             // Cache a reference to object's renderer
-            m_Renderer = GetComponent<Renderer>();
+            m_renderer = GetComponent<Renderer>();
 
             // Cache a reference to object's material and create an instance by doing so.
-            m_Material = m_Renderer.material;
+            m_material = m_renderer.material;
         }
 
         void Start()
@@ -40,8 +41,8 @@ namespace TMPro.Examples
                 //lightAngle = (m_Material.GetFloat(ShaderPropertyIDs.ID_LightAngle) + Time.deltaTime) % 6.2831853f;
                 //m_Material.SetFloat(ShaderPropertyIDs.ID_LightAngle, lightAngle);
 
-                glowPower = GlowCurve.Evaluate(m_frame);
-                m_Material.SetFloat(ShaderUtilities.ID_GlowPower, glowPower);
+                glowPower = m_glowCurve.Evaluate(m_frame);
+                m_material.SetFloat(ShaderUtilities.ID_GlowPower, glowPower);
 
                 m_frame += Time.deltaTime * Random.Range(0.2f, 0.3f);
                 yield return new WaitForEndOfFrame();

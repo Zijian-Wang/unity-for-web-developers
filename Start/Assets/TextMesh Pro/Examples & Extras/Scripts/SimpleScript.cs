@@ -11,7 +11,7 @@ namespace TMPro.Examples
         private TextMeshPro m_textMeshPro;
         //private TMP_FontAsset m_FontAsset;
 
-        private const string label = "The <#0050FF>count is: </color>{0:2}";
+        private const string Label = "The <#0050FF>count is: </color>{0:2}";
         private float m_frame;
 
 
@@ -50,7 +50,7 @@ namespace TMPro.Examples
 
         void Update()
         {
-            m_textMeshPro.SetText(label, m_frame % 1000);
+            m_textMeshPro.SetText(Label, m_frame % 1000);
             m_frame += 1 * Time.deltaTime;
         }
 

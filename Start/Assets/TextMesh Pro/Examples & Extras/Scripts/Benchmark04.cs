@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 
 namespace TMPro.Examples
@@ -8,35 +9,35 @@ namespace TMPro.Examples
     public class Benchmark04 : MonoBehaviour
     {
 
-        public int SpawnType = 0;
+        [FormerlySerializedAs("SpawnType")] public int m_spawnType = 0;
 
-        public int MinPointSize = 12;
-        public int MaxPointSize = 64;
-        public int Steps = 4;
+        [FormerlySerializedAs("MinPointSize")] public int m_minPointSize = 12;
+        [FormerlySerializedAs("MaxPointSize")] public int m_maxPointSize = 64;
+        [FormerlySerializedAs("Steps")] public int m_steps = 4;
 
-        private Transform m_Transform;
+        private Transform m_transform;
         //private TextMeshProFloatingText floatingText_Script;
         //public Material material;
 
 
         void Start()
         {
-            m_Transform = transform;
+            m_transform = transform;
 
             float lineHeight = 0;
             float orthoSize = Camera.main.orthographicSize = Screen.height / 2;
             float ratio = (float)Screen.width / Screen.height;
 
-            for (int i = MinPointSize; i <= MaxPointSize; i += Steps)
+            for (int i = m_minPointSize; i <= m_maxPointSize; i += m_steps)
             {
-                if (SpawnType == 0)
+                if (m_spawnType == 0)
                 {
                     // TextMesh Pro Implementation
                     GameObject go = new GameObject("Text - " + i + " Pts");
 
                     if (lineHeight > orthoSize * 2) return;
 
-                    go.transform.position = m_Transform.position + new Vector3(ratio * -orthoSize * 0.975f, orthoSize * 0.975f - lineHeight, 0);
+                    go.transform.position = m_transform.position + new Vector3(ratio * -orthoSize * 0.975f, orthoSize * 0.975f - lineHeight, 0);
 
                     TextMeshPro textMeshPro = go.AddComponent<TextMeshPro>();
 

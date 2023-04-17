@@ -1,22 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 
 namespace TMPro.Examples
 {
     
-    public class TMPro_InstructionOverlay : MonoBehaviour
+    public class TMProInstructionOverlay : MonoBehaviour
     {
 
-        public enum FpsCounterAnchorPositions { TopLeft, BottomLeft, TopRight, BottomRight };
+        public enum FPSCounterAnchorPositions { TopLeft, BottomLeft, TopRight, BottomRight };
 
-        public FpsCounterAnchorPositions AnchorPosition = FpsCounterAnchorPositions.BottomLeft;
+        [FormerlySerializedAs("AnchorPosition")] public FPSCounterAnchorPositions m_anchorPosition = FPSCounterAnchorPositions.BottomLeft;
 
-        private const string instructions = "Camera Control - <#ffff00>Shift + RMB\n</color>Zoom - <#ffff00>Mouse wheel.";
+        private const string Instructions = "Camera Control - <#ffff00>Shift + RMB\n</color>Zoom - <#ffff00>Mouse wheel.";
 
-        private TextMeshPro m_TextMeshPro;
+        private TextMeshPro m_textMeshPro;
         private TextContainer m_textContainer;
-        private Transform m_frameCounter_transform;
+        private Transform m_frameCounterTransform;
         private Camera m_camera;
 
         //private FpsCounterAnchorPositions last_AnchorPosition;
@@ -29,54 +30,54 @@ namespace TMPro.Examples
             m_camera = Camera.main;
 
             GameObject frameCounter = new GameObject("Frame Counter");
-            m_frameCounter_transform = frameCounter.transform;
-            m_frameCounter_transform.parent = m_camera.transform;
-            m_frameCounter_transform.localRotation = Quaternion.identity;
+            m_frameCounterTransform = frameCounter.transform;
+            m_frameCounterTransform.parent = m_camera.transform;
+            m_frameCounterTransform.localRotation = Quaternion.identity;
 
 
-            m_TextMeshPro = frameCounter.AddComponent<TextMeshPro>();
-            m_TextMeshPro.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-            m_TextMeshPro.fontSharedMaterial = Resources.Load<Material>("Fonts & Materials/LiberationSans SDF - Overlay");
+            m_textMeshPro = frameCounter.AddComponent<TextMeshPro>();
+            m_textMeshPro.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+            m_textMeshPro.fontSharedMaterial = Resources.Load<Material>("Fonts & Materials/LiberationSans SDF - Overlay");
 
-            m_TextMeshPro.fontSize = 30;
+            m_textMeshPro.fontSize = 30;
 
-            m_TextMeshPro.isOverlay = true;
+            m_textMeshPro.isOverlay = true;
             m_textContainer = frameCounter.GetComponent<TextContainer>();
 
-            Set_FrameCounter_Position(AnchorPosition);
+            Set_FrameCounter_Position(m_anchorPosition);
             //last_AnchorPosition = AnchorPosition;
 
-            m_TextMeshPro.text = instructions;
+            m_textMeshPro.text = Instructions;
 
         }
 
 
 
 
-        void Set_FrameCounter_Position(FpsCounterAnchorPositions anchor_position)
+        void Set_FrameCounter_Position(FPSCounterAnchorPositions anchorPosition)
         {
 
-            switch (anchor_position)
+            switch (anchorPosition)
             {
-                case FpsCounterAnchorPositions.TopLeft:
+                case FPSCounterAnchorPositions.TopLeft:
                     //m_TextMeshPro.anchor = AnchorPositions.TopLeft;
                     m_textContainer.anchorPosition = TextContainerAnchors.TopLeft;
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 1, 100.0f));
+                    m_frameCounterTransform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 1, 100.0f));
                     break;
-                case FpsCounterAnchorPositions.BottomLeft:
+                case FPSCounterAnchorPositions.BottomLeft:
                     //m_TextMeshPro.anchor = AnchorPositions.BottomLeft;
                     m_textContainer.anchorPosition = TextContainerAnchors.BottomLeft;
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 0, 100.0f));
+                    m_frameCounterTransform.position = m_camera.ViewportToWorldPoint(new Vector3(0, 0, 100.0f));
                     break;
-                case FpsCounterAnchorPositions.TopRight:
+                case FPSCounterAnchorPositions.TopRight:
                     //m_TextMeshPro.anchor = AnchorPositions.TopRight;
                     m_textContainer.anchorPosition = TextContainerAnchors.TopRight;
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 1, 100.0f));
+                    m_frameCounterTransform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 1, 100.0f));
                     break;
-                case FpsCounterAnchorPositions.BottomRight:
+                case FPSCounterAnchorPositions.BottomRight:
                     //m_TextMeshPro.anchor = AnchorPositions.BottomRight;
                     m_textContainer.anchorPosition = TextContainerAnchors.BottomRight;
-                    m_frameCounter_transform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 0, 100.0f));
+                    m_frameCounterTransform.position = m_camera.ViewportToWorldPoint(new Vector3(1, 0, 100.0f));
                     break;
             }
         }
